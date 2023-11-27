@@ -3,7 +3,10 @@
 import { TextField, Button } from '@radix-ui/themes'
 import SimpleMDE from 'react-simplemde-editor';
 import { useForm, Controller,  } from 'react-hook-form'
+import axios from 'axios';
 import "easymde/dist/easymde.min.css";
+import { useRouter } from 'next/navigation';
+
 
 interface issueForm {
     title: string;
@@ -12,12 +15,16 @@ interface issueForm {
 
 
 const NewIssuePage =  ()=> {
+    const router = useRouter();
     const {register, control,handleSubmit} = useForm <issueForm>();
     
   return (
     <>
     <form className='max-w-xl space-y-3' 
-    onSubmit={handleSubmit((data) => console.log(data))}>
+    onSubmit={handleSubmit(async (data) => {
+        await axios.post('/api/issues', data)
+        router.push('/issues')
+    })}>
       <TextField.Root>
         <TextField.Input placeholder='Issue Title' {...register('title')}/>
       </TextField.Root>
